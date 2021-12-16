@@ -1,4 +1,4 @@
-const initialState = { name: "", price: "", filter: "", content: "" };
+const initialState = { name: "", price: "", content: "" };
 
 //action={type:"",payload:""}
 export default function formReducer(state = initialState, action) {

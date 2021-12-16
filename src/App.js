@@ -16,7 +16,7 @@ import EditService from "./components/EditService/EditService";
 // const adres = "https://react-home-works-router-crid.herokuapp.com";
 const adres = "http://localhost";
 const port = "7070";
-const url = `${adres}:${port}/api/services`;
+const url = `${adres}:${port}/api`;
 function App() {
   return (
     <Provider store={store}>
@@ -24,19 +24,8 @@ function App() {
         <div className="App">
           {/* <Post /> */}
           <Routes>
-            {/* <Route path="/posts/new" element={<NewPost url={url} />} />
-          <Route
-            path="/posts/:id"
-            element={
-              <ViewPost
-                posts={posts}
-                setPosts={setPosts}
-                url={url}
-                updatePosts={updatePosts}
-              />
-            }
-          /> */}
-            <Route
+            <Route path="/services/:id" element={<EditService url={url} />} />
+            {/* <Route
               path="/services"
               element={
                 <EditService
@@ -46,18 +35,8 @@ function App() {
                   // updatePosts={updatePosts}
                 />
               }
-            />
-            {/* <Route
-              path="/services"
-              element={
-                <ListService
-                  // posts={posts}
-                  // setPosts={setPosts}
-                  url={url}
-                  // updatePosts={updatePosts}
-                />
-              }
             /> */}
+            <Route path="/services" element={<ListService url={url} />} />
 
             <Route path="/" element={<Navigate replace to="/services" />} />
           </Routes>

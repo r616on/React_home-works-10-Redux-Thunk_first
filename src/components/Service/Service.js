@@ -3,18 +3,18 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import "./desktop.scss";
 
-const Service = ({ id, name, price }) => {
+const Service = ({ id, name, price, handleDel }) => {
   return (
-    <input className="Item" id={id}>
+    <div className="Item" id={id}>
       <span className="Item-item operation">{name}</span>
       <span className="Item-item price"> {price}</span>
-      <span className="Item-item  edit">
+      <Link to={`/services/${id}`} className="Item-item  edit">
         <span className="material-icons edit">edit</span>
-      </span>
-      <span className="Item-item del">
+      </Link>
+      <span onClick={() => handleDel(id)} className="Item-item del">
         <span className="material-icons del">clear</span>
       </span>
-    </input>
+    </div>
   );
 };
 

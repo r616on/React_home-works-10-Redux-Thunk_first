@@ -12,12 +12,14 @@ function ListService({ url }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch({ type: "SET_ERROR", payload: false });
     dispatch({ type: "SET_LOADING", payload: "loading" });
-    fetch(url)
+    fetch(`${url}/services`)
       .then((response) => {
         if (response.status > 300) {
           console.log("error" + response.status);
         }
+        console.log(response);
         return response.json();
       })
       .then((service) => {
@@ -26,13 +28,27 @@ function ListService({ url }) {
       })
       .catch((error) => {
         dispatch({ type: "SET_ERROR", payload: true });
-        dispatch({ type: "SET_LOADING", payload: "error" });
       });
   }, []);
 
+  const handleDel = (id) => {
+    dispatch({ type: "SET_ERROR", payload: false });
+    dispatch({ type: "SET_LOADING", payload: "loading" });
+    fetch(`${url}/services/:${id}`, { method: "DELETE" })
+      .then((response) => {
+        if (response.status === 204) {
+          dispatch({ type: "DELETE_ITEM", payload: id });
+          dispatch({ type: "SET_LOADING", payload: "idel" });
+        }
+      })
+      .catch((error) => {
+        dispatch({ type: "SET_ERROR", payload: true });
+        dispatch({ type: "SET_LOADING", payload: "idel" });
+      });
+  };
   return (
-    <input className="ListService">
-      <input className="ListService-row">
+    <div className="ListService">
+      <div className="ListService-row">
         {services.map((item) => {
           return (
             <Service
@@ -40,15 +56,14 @@ function ListService({ url }) {
               id={item.id}
               name={item.name}
               price={item.price}
+              handleDel={handleDel}
             />
           );
         })}
-      </input>
-      {loading === "loading" ? (
-        <input className="loader">LOADING...</input>
-      ) : null}
-      {error && <input className="error">Произошла ошибка</input>}
-    </input>
+      </div>
+      {loading === "loading" ? <div className="loader">LOADING...</div> : null}
+      {error && <div className="error">Произошла ошибка</div>}
+    </div>
   );
 }
 

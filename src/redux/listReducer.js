@@ -47,7 +47,10 @@ export default function listReducer(state = initialState, action) {
 
     case "DELETE_ITEM":
       const id = action.payload;
-      return { ...state, items: state.items.filter((item) => item.id !== id) };
+      return {
+        ...state,
+        services: state.services.filter((item) => item.id !== id),
+      };
 
     case "GET_ITEM":
       return {
