@@ -18,9 +18,10 @@ const Service = ({ id, name, price, handleDel }) => {
   );
 };
 
-Service.propTypes = {};
+Service.propTypes = {
+  id: PropTypes.number,
+  name: PropTypes.string,
+  handleDel: PropTypes.func,
+};
 
 export default Service;
-
-// onClick={() => handleEdit(id)}
-// onClick={() => handleDel(id)}

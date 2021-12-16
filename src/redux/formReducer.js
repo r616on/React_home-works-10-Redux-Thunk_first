@@ -8,6 +8,8 @@ export default function formReducer(state = initialState, action) {
       return { ...state, [fild]: value };
     case "CHANGE_FORM_INIT":
       return initialState;
+    case "CHANGE_FORM_IN_ITEM":
+      return action.payload;
     default:
       return state;
   }

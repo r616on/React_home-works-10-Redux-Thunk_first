@@ -1,18 +1,14 @@
 import React, { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import Service from "../Service/Service";
 import "./desktop.scss";
-import preloadGif from "../img/Preload.gif";
 
 function EditService({ url }) {
   const dispatch = useDispatch();
-  const { services, loading, error } = useSelector(
-    (store) => store.listReducer
-  );
+  const { loading, error } = useSelector((store) => store.listReducer);
   const form = useSelector((store) => store.formReducer);
   const params = useParams();
-  console.log(params.id);
+  const navigate = useNavigate();
 
   const handleChange = ({ target }) => {
     const name = target.name;
@@ -22,26 +18,21 @@ function EditService({ url }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("11");
-    // if (editАFlag) {
-    //   setEditАFlag(false);
-    //   dispatch({
-    //     type: "EDIT_ITEM",
-    //     payload: {
-    //       idItem: idEditEl,
-    //       itemEdit: { operation: form.operation, price: form.price },
-    //     },
-    //   });
-    //   dispatch({ type: "CHANGE_FORM_INIT" });
-    // } else {
-    //   if (form.operation && form.price > 0) {
-    //     dispatch({
-    //       type: "ADD_ITEM",
-    //       payload: { operation: form.operation, price: form.price },
-    //     });
-    //     dispatch({ type: "CHANGE_FORM_INIT" });
-    //   }
-    // }
+    dispatch({ type: "SET_LOADING", payload: "loading" });
+    fetch(`${url}/services/`, {
+      method: "POST",
+      body: JSON.stringify({ ...form, id: +params.id }),
+    })
+      .then((response) => {
+        if (response.status === 204) {
+          dispatch({ type: "SET_LOADING", payload: "idel" });
+          navigate("/");
+        }
+      })
+      .catch(() => {
+        dispatch({ type: "SET_LOADING", payload: "idel" });
+        dispatch({ type: "SET_ERROR", payload: true });
+      });
   };
 
   useEffect(() => {
@@ -54,32 +45,27 @@ function EditService({ url }) {
       .then((item) => {
         dispatch({ type: "SET_LOADING", payload: "idel" });
         dispatch({
-          type: "CHANGE_FORM_VALUES",
-          payload: { fild: "name", value: item.name },
-        });
-        dispatch({
-          type: "CHANGE_FORM_VALUES",
-          payload: { fild: "price", value: item.price },
-        });
-        dispatch({
-          type: "CHANGE_FORM_VALUES",
-          payload: { fild: "content", value: item.content },
+          type: "CHANGE_FORM_IN_ITEM",
+          payload: {
+            name: item.name,
+            price: item.price,
+            content: item.content,
+          },
         });
       })
-      .catch((error) => {
+      .catch(() => {
+        dispatch({ type: "SET_LOADING", payload: "idel" });
         dispatch({ type: "SET_ERROR", payload: true });
       });
+    // eslint-disable-next-line
   }, []);
 
-  console.log(preloadGif);
   return (
-    <div
-      className="EditService"
-      style={{
-        backgroundImage: preloadGif,
-      }}
-    >
-      {loading === "idel" && (
+    <div className="EditService">
+      {loading === "loading" ? (
+        <div className="EditService-Loading"></div>
+      ) : null}
+      {
         <form className="Editing-form-row" onSubmit={handleSubmit}>
           <label className="EditService-lablel">
             Название
@@ -114,7 +100,9 @@ function EditService({ url }) {
             />
           </label>
           <div className="EditService-control">
-            <div className="form-item control "> Отмена</div>
+            <Link to="/" className="form-item control ">
+              Отмена
+            </Link>
             <input
               className="form-item control"
               type="submit"
@@ -122,7 +110,7 @@ function EditService({ url }) {
             />
           </div>
         </form>
-      )}
+      }
       {error && <div className="error">Произошла ошибка</div>}
     </div>
   );
